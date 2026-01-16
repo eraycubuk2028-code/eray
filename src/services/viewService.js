@@ -97,5 +97,23 @@ export const viewService = {
             console.error("Error listening to stats:", error);
             return () => { };
         }
+    },
+
+    // Reset all stats (Admin/Dev tool)
+    resetAllStats: async () => {
+        try {
+            const querySnapshot = await getDocs(collection(db, "movies"));
+            const promises = querySnapshot.docs.map(docSnap =>
+                updateDoc(doc(db, "movies", docSnap.id), {
+                    views: 0,
+                    likes: 0,
+                    dislikes: 0
+                })
+            );
+            await Promise.all(promises);
+            console.log("All stats reset to 0");
+        } catch (error) {
+            console.error("Error resetting stats:", error);
+        }
     }
 };

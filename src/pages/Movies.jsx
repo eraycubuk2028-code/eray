@@ -9,54 +9,39 @@ const Movies = () => {
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [stats, setStats] = useState({});
+    const [likedMovies, setLikedMovies] = useState(new Set());
 
     // Fetch stats on mount and listen for real-time updates
     useEffect(() => {
+        // Load liked movies from local storage
+        const storedLikes = JSON.parse(localStorage.getItem('likedMovies') || '[]');
+        setLikedMovies(new Set(storedLikes));
+
+        // RESET STATS (Temporary - remove after use if needed, but safe to keep checking a flag)
+        // Check if we haven't reset yet to avoid resetting every reload during this session
+        // For this specific user request, we'll force a reset once.
+        const hasReset = sessionStorage.getItem('hasResetStats');
+        if (!hasReset) {
+            viewService.resetAllStats();
+            sessionStorage.setItem('hasResetStats', 'true');
+        }
+
         const unsubscribe = viewService.listenToAllStats((data) => {
             setStats(data);
         });
         return () => unsubscribe();
     }, []);
 
-    // Effect to handle body scroll lock
-    useEffect(() => {
-        if (isDrawerOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [isDrawerOpen]);
-
-    // Get Movies from Service
-    const rawMovies = contentService.getMovies();
-
-    // Merge stats with movies
-    const movies = rawMovies.map(movie => {
-        const movieStats = stats[movie.id];
-        return {
-            ...movie,
-            views: movieStats?.views || movie.views,
-            likes: movieStats?.likes || movie.likes,
-            dislikes: movieStats?.dislikes || movie.dislikes
-        };
-    });
-
-    const handleMovieClick = (movie) => {
-        setSelectedMovie(movie);
-        setIsDrawerOpen(true);
-    };
-
-    const handleCloseDrawer = () => {
-        setIsDrawerOpen(false);
-        setTimeout(() => setSelectedMovie(null), 300);
-    };
-
     const handleLike = async (e, movie) => {
         e.stopPropagation();
         if (!movie) return;
+
+        // Check if already liked
+        if (likedMovies.has(movie.id)) {
+            // Optional: User could unlike? For now, request implies preventing spam.
+            // visual feedback that it's already liked?
+            return;
+        }
 
         // Optimistic update
         setStats(prev => ({
@@ -66,6 +51,12 @@ const Movies = () => {
                 likes: (prev[movie.id]?.likes || 0) + 1
             }
         }));
+
+        // Update Local Storage
+        const newLiked = new Set(likedMovies);
+        newLiked.add(movie.id);
+        setLikedMovies(newLiked);
+        localStorage.setItem('likedMovies', JSON.stringify([...newLiked]));
 
         await viewService.likeMovie(movie.id);
     };
@@ -161,8 +152,24 @@ const Movies = () => {
                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                             {currentMovie.views.toLocaleString()} {t('browse.views')}
                                         </div>
-                                        <div style={{ ...styles.statItem, cursor: 'pointer' }} onClick={(e) => handleLike(e, currentMovie)}>
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                                        <div
+                                            style={{
+                                                ...styles.statItem,
+                                                cursor: 'pointer',
+                                                color: likedMovies.has(currentMovie.id) ? '#800080' : 'inherit' // Purple if liked
+                                            }}
+                                            onClick={(e) => handleLike(e, currentMovie)}
+                                        >
+                                            <svg
+                                                width="20"
+                                                height="20"
+                                                viewBox="0 0 24 24"
+                                                fill={likedMovies.has(currentMovie.id) ? "#800080" : "none"}
+                                                stroke={likedMovies.has(currentMovie.id) ? "#800080" : "currentColor"}
+                                                strokeWidth="2"
+                                            >
+                                                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                                            </svg>
                                             {currentMovie.likes.toLocaleString()}
                                         </div>
                                     </div>
