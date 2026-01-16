@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import moonImg from '../assets/moon.png';
 import kuzenlerImg from '../assets/kuzenler.jpg';
+import erayImg from '../assets/eray_placeholder.png';
 import { viewService } from '../services/viewService';
 
 const Movies = () => {
@@ -67,8 +68,8 @@ const Movies = () => {
             likes: 100,
             dislikes: 0,
             badge: "HD",
-            thumbnail: moonImg,
-            heroImage: moonImg
+            thumbnail: erayImg,
+            heroImage: erayImg
         }))
     ];
 

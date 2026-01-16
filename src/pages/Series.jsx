@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import moonImg from '../assets/moon.png';
+import erayImg from '../assets/eray_placeholder.png';
 
 const Series = () => {
     const { t } = useTranslation();
@@ -29,8 +30,8 @@ const Series = () => {
         price: "1.00",
         author: "Safe Content",
         badge: "HD",
-        thumbnail: moonImg,
-        heroImage: moonImg
+        thumbnail: erayImg,
+        heroImage: erayImg
     }));
 
     const handleSeriesClick = (item) => {

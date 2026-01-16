@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import moonImg from '../assets/moon.png';
+import erayImg from '../assets/eray_placeholder.png';
 import './Watch.css';
 import { viewService } from '../services/viewService';
 
@@ -236,7 +237,7 @@ const Watch = () => {
                     onPause={() => setIsPlaying(false)}
                     onTimeUpdate={handleTimeUpdate}
                     crossOrigin="anonymous"
-                    poster={movieData.thumbnail || moonImg}
+                    poster={movieData.thumbnail || erayImg}
                 >
                     <source src={videoUrl} type="video/mp4" />
                     Your browser does not support the video tag.

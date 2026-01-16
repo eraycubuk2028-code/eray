@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import moonImg from '../assets/moon.png';
+import erayImg from '../assets/eray_placeholder.png';
 
 const NewPopular = () => {
     const { t } = useTranslation();
@@ -47,8 +48,8 @@ const NewPopular = () => {
                 badge: isMovie ? "HD" : "NEW EP",
                 rawMatchVal: 99,
                 rawDurationVal: isMovie ? 120 : 1,
-                image: moonImg,
-                heroImage: moonImg
+                image: erayImg,
+                heroImage: erayImg
             };
         };
 

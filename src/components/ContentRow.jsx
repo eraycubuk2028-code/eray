@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import MovieCard from './MovieCard';
 import moonImg from '../assets/moon.png';
+import erayImg from '../assets/eray_placeholder.png';
 
 const ContentRow = ({ title, items = [] }) => {
     const rowRef = useRef(null);
@@ -9,7 +10,7 @@ const ContentRow = ({ title, items = [] }) => {
     const displayItems = items.length ? items : Array(10).fill(null).map((_, i) => ({
         id: i,
         title: "Deneme 123",
-        image: moonImg
+        image: erayImg
     }));
 
     return (
