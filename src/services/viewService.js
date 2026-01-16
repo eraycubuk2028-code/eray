@@ -28,6 +28,30 @@ export const viewService = {
         }
     },
 
+    // Increment like count
+    likeMovie: async (movieId) => {
+        if (!movieId) return;
+        const movieRef = doc(db, "movies", String(movieId));
+        try {
+            const docSnap = await getDoc(movieRef);
+            if (docSnap.exists()) {
+                await updateDoc(movieRef, {
+                    likes: increment(1)
+                });
+            } else {
+                await setDoc(movieRef, {
+                    views: 0,
+                    likes: 1,
+                    dislikes: 0
+                });
+            }
+            return true;
+        } catch (error) {
+            console.error("Error liking movie:", error);
+            return false;
+        }
+    },
+
     // Get stats for a single movie
     getMovieStats: async (movieId) => {
         if (!movieId) return null;
