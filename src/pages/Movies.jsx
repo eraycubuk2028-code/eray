@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import { contentService } from '../services/contentService';
+import { viewService } from '../services/viewService';
 
 const Movies = () => {
     const { t } = useTranslation();
