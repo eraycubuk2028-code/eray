@@ -10,13 +10,12 @@ const Movies = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [stats, setStats] = useState({});
 
-    // Fetch stats on mount
+    // Fetch stats on mount and listen for real-time updates
     useEffect(() => {
-        const fetchStats = async () => {
-            const data = await viewService.getAllMovieStats();
+        const unsubscribe = viewService.listenToAllStats((data) => {
             setStats(data);
-        };
-        fetchStats();
+        });
+        return () => unsubscribe();
     }, []);
 
     // Effect to handle body scroll lock

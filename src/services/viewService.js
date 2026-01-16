@@ -1,5 +1,5 @@
 import { db } from '../firebase';
-import { doc, getDoc, setDoc, updateDoc, increment, collection, getDocs } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, increment, collection, getDocs, onSnapshot } from "firebase/firestore";
 
 export const viewService = {
     // Increment view count for a movie
@@ -80,6 +80,22 @@ export const viewService = {
         } catch (error) {
             console.error("Error fetching all stats:", error);
             return {};
+        }
+    },
+    // Listen to real-time updates for all movies
+    listenToAllStats: (callback) => {
+        try {
+            const unsub = onSnapshot(collection(db, "movies"), (querySnapshot) => {
+                const stats = {};
+                querySnapshot.forEach((doc) => {
+                    stats[doc.id] = doc.data();
+                });
+                callback(stats);
+            });
+            return unsub;
+        } catch (error) {
+            console.error("Error listening to stats:", error);
+            return () => { };
         }
     }
 };
