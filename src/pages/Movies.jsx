@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import moonImg from '../assets/moon.png';
+import kuzenlerImg from '../assets/kuzenler.jpg';
 
 const Movies = () => {
     const { t } = useTranslation();
@@ -21,24 +22,44 @@ const Movies = () => {
         };
     }, [isDrawerOpen]);
 
-    // Generate 30 Safe Content Movies
-    const movies = Array(30).fill(null).map((_, i) => ({
-        id: i + 1,
-        title: "Deneme 123",
-        description: "Telif hakkı olmayan güvenli içerik. Deneme amaçlı oluşturulmuştur.",
-        year: 2024,
-        rawDuration: 120,
-        duration: "120 dk.",
-        genre: "Genel",
-        match: "99% Eşleşme",
-        rawMatch: 99,
-        views: 1000,
-        likes: 100,
-        dislikes: 0,
-        badge: "HD",
-        thumbnail: moonImg,
-        heroImage: moonImg
-    }));
+    // Generate Movies
+    const movies = [
+        {
+            id: 'kuzenler-1',
+            title: "Kuzenler",
+            description: "Kuzenlerin eğlenceli ve komik anları. Bu özel içerikle kahkahaya doyamayacaksınız!",
+            year: 2024,
+            rawDuration: 15,
+            duration: "15 dk.",
+            genre: "Komedi",
+            match: "98% Eşleşme",
+            rawMatch: 98,
+            views: 1500,
+            likes: 250,
+            dislikes: 0,
+            badge: "4K",
+            thumbnail: kuzenlerImg,
+            heroImage: kuzenlerImg,
+            videoUrl: "https://www.youtube.com/watch?v=ZixoY-1ET5s"
+        },
+        ...Array(30).fill(null).map((_, i) => ({
+            id: i + 1,
+            title: "Deneme 123",
+            description: "Telif hakkı olmayan güvenli içerik. Deneme amaçlı oluşturulmuştur.",
+            year: 2024,
+            rawDuration: 120,
+            duration: "120 dk.",
+            genre: "Genel",
+            match: "99% Eşleşme",
+            rawMatch: 99,
+            views: 1000,
+            likes: 100,
+            dislikes: 0,
+            badge: "HD",
+            thumbnail: moonImg,
+            heroImage: moonImg
+        }))
+    ];
 
     const handleMovieClick = (movie) => {
         setSelectedMovie(movie);
@@ -119,7 +140,7 @@ const Movies = () => {
                                 <p style={styles.drawerDescription}>{selectedMovie.description}</p>
 
                                 <div style={styles.actions}>
-                                    <button style={styles.playButton}>
+                                    <button style={styles.playButton} onClick={() => navigate('/watch', { state: { movie: selectedMovie } })}>
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M8 5v14l11-7z" />
                                         </svg>
