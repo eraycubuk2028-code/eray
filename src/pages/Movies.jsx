@@ -116,72 +116,75 @@ const Movies = () => {
                 ...styles.drawer,
                 transform: isDrawerOpen ? 'translateX(0)' : 'translateX(100%)',
             }}>
-                {selectedMovie && (
-                    <div style={styles.drawerContent}>
-                        <button style={styles.closeButton} onClick={handleCloseDrawer}>×</button>
+                {selectedMovie && (() => {
+                    const currentMovie = movies.find(m => m.id === selectedMovie.id) || selectedMovie;
+                    return (
+                        <div style={styles.drawerContent}>
+                            <button style={styles.closeButton} onClick={handleCloseDrawer}>×</button>
 
-                        {/* Drawer Hero Section */}
-                        <div style={{
-                            ...styles.drawerHero,
-                            backgroundImage: `linear-gradient(to top, #141414, transparent), url(${selectedMovie.heroImage})`
-                        }}>
-                            <div style={styles.drawerHeroContent}>
-                                <h1 style={styles.drawerTitle}>{selectedMovie.title}</h1>
+                            {/* Drawer Hero Section */}
+                            <div style={{
+                                ...styles.drawerHero,
+                                backgroundImage: `linear-gradient(to top, #141414, transparent), url(${currentMovie.heroImage})`
+                            }}>
+                                <div style={styles.drawerHeroContent}>
+                                    <h1 style={styles.drawerTitle}>{currentMovie.title}</h1>
 
-                                <div style={styles.meta}>
-                                    <span style={styles.match}>{selectedMovie.rawMatch}% {t('browse.match')}</span>
-                                    <span>{selectedMovie.year}</span>
-                                    <span style={styles.badge}>{selectedMovie.badge}</span>
-                                    <span>{selectedMovie.rawDuration} {t('browse.min')}</span>
-                                </div>
-
-                                <div style={styles.genreTag}>{selectedMovie.genre}</div>
-
-                                <p style={styles.drawerDescription}>{selectedMovie.description}</p>
-
-                                <div style={styles.actions}>
-                                    <button style={styles.playButton} onClick={() => navigate('/watch', { state: { movie: selectedMovie } })}>
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                            <path d="M8 5v14l11-7z" />
-                                        </svg>
-                                        {t('browse.play')}
-                                    </button>
-                                    <button style={styles.listButton}>
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <line x1="12" y1="5" x2="12" y2="19"></line>
-                                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                                        </svg>
-                                        {t('browse.addToList')}
-                                    </button>
-                                </div>
-
-                                <div style={styles.statsRow}>
-                                    <div style={styles.statItem}>
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                                        {selectedMovie.views.toLocaleString()} {t('browse.views')}
+                                    <div style={styles.meta}>
+                                        <span style={styles.match}>{currentMovie.rawMatch}% {t('browse.match')}</span>
+                                        <span>{currentMovie.year}</span>
+                                        <span style={styles.badge}>{currentMovie.badge}</span>
+                                        <span>{currentMovie.rawDuration} {t('browse.min')}</span>
                                     </div>
-                                    <div style={{ ...styles.statItem, cursor: 'pointer' }} onClick={(e) => handleLike(e, selectedMovie)}>
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
-                                        {selectedMovie.likes.toLocaleString()}
-                                    </div>
-                                </div>
 
+                                    <div style={styles.genreTag}>{currentMovie.genre}</div>
+
+                                    <p style={styles.drawerDescription}>{currentMovie.description}</p>
+
+                                    <div style={styles.actions}>
+                                        <button style={styles.playButton} onClick={() => navigate('/watch', { state: { movie: currentMovie } })}>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M8 5v14l11-7z" />
+                                            </svg>
+                                            {t('browse.play')}
+                                        </button>
+                                        <button style={styles.listButton}>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            </svg>
+                                            {t('browse.addToList')}
+                                        </button>
+                                    </div>
+
+                                    <div style={styles.statsRow}>
+                                        <div style={styles.statItem}>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                            {currentMovie.views.toLocaleString()} {t('browse.views')}
+                                        </div>
+                                        <div style={{ ...styles.statItem, cursor: 'pointer' }} onClick={(e) => handleLike(e, currentMovie)}>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                                            {currentMovie.likes.toLocaleString()}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            {/* More Like This (Placeholder) */}
+                            <div style={styles.moreLikeThis}>
+                                <h3 style={styles.sectionTitle}>Bunu Beğenenler Şunları da İzledi</h3>
+                                <div style={styles.recommendationGrid}>
+                                    {[1, 2, 3, 4].map(i => (
+                                        <div key={i} style={styles.recommendationCard}>
+                                            <div style={styles.recPlaceholder}></div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
-
-                        {/* More Like This (Placeholder) */}
-                        <div style={styles.moreLikeThis}>
-                            <h3 style={styles.sectionTitle}>Bunu Beğenenler Şunları da İzledi</h3>
-                            <div style={styles.recommendationGrid}>
-                                {[1, 2, 3, 4].map(i => (
-                                    <div key={i} style={styles.recommendationCard}>
-                                        <div style={styles.recPlaceholder}></div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                )}
+                    );
+                })()}
             </div>
         </div>
     );
