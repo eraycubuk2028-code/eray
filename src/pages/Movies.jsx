@@ -43,34 +43,47 @@ const Movies = () => {
         };
     }, []);
 
-    const handleLike = async (e, movie) => {
-        e.stopPropagation();
-        if (!movie) return;
+    // Get Movies from Service
+    const rawMovies = contentService.getMovies();
 
-        // Check if already liked
-        if (likedMovies.has(movie.id)) {
-            // Optional: User could unlike? For now, request implies preventing spam.
-            // visual feedback that it's already liked?
-            return;
+    // Safe Merge Logic
+    let movies = [];
+    let error = null;
+    try {
+        if (rawMovies && Array.isArray(rawMovies)) {
+            movies = rawMovies.map(movie => {
+                const movieStats = stats[movie.id] || {}; // Safe fallback
+                return {
+                    ...movie,
+                    views: movieStats.views || movie.views || 0,
+                    likes: movieStats.likes || movie.likes || 0,
+                    dislikes: movieStats.dislikes || movie.dislikes || 0
+                };
+            });
         }
+    } catch (e) {
+        console.error("Error generating movies list:", e);
+        error = "Film listesi oluşturulurken bir hata oluştu.";
+    }
 
-        // Optimistic update
-        setStats(prev => ({
-            ...prev,
-            [movie.id]: {
-                ...prev[movie.id],
-                likes: (prev[movie.id]?.likes || 0) + 1
-            }
-        }));
-
-        // Update Local Storage
-        const newLiked = new Set(likedMovies);
-        newLiked.add(movie.id);
-        setLikedMovies(newLiked);
-        localStorage.setItem('likedMovies', JSON.stringify([...newLiked]));
-
-        await viewService.likeMovie(movie.id);
+    const handleMovieClick = (movie) => {
+        setSelectedMovie(movie);
+        setIsDrawerOpen(true);
     };
+
+    const handleCloseDrawer = () => {
+        setIsDrawerOpen(false);
+        setTimeout(() => setSelectedMovie(null), 300);
+    };
+
+    if (error) {
+        return (
+            <div style={{ ...styles.container, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <h2 style={{ color: 'white' }}>{error}</h2>
+                <button onClick={() => window.location.reload()} style={{ marginLeft: '20px', padding: '10px', cursor: 'pointer' }}>Yenile</button>
+            </div>
+        );
+    }
 
     return (
         <div style={styles.container}>
@@ -105,8 +118,6 @@ const Movies = () => {
                     </div>
                 ))}
             </div>
-
-            {/* Side Drawer */}
             <div style={{
                 ...styles.drawerBackdrop,
                 opacity: isDrawerOpen ? 1 : 0,
@@ -203,7 +214,7 @@ const Movies = () => {
                     );
                 })()}
             </div>
-        </div>
+        </div >
     );
 };
 
