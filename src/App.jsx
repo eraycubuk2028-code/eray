@@ -12,7 +12,7 @@ import NewPopular from './pages/NewPopular';
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/eray">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/watch" element={<Watch />} />
