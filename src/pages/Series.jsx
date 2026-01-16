@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
-import moonImg from '../assets/moon.png';
-import erayImg from '../assets/eray_placeholder.png';
+import { contentService } from '../services/contentService';
 
 const Series = () => {
     const { t } = useTranslation();
@@ -19,20 +18,8 @@ const Series = () => {
         return () => { document.body.style.overflow = 'unset'; };
     }, [isDrawerOpen]);
 
-    // Safe Content Series
-    const series = Array(20).fill(null).map((_, index) => ({
-        id: index + 1,
-        title: "Deneme 123",
-        description: "Telif hakkı olmayan güvenli içerik. Deneme amaçlı oluşturulmuştur.",
-        year: 2024,
-        rawMatch: 99,
-        seasons: 1,
-        price: "1.00",
-        author: "Safe Content",
-        badge: "HD",
-        thumbnail: erayImg,
-        heroImage: erayImg
-    }));
+    // Get Series from Service
+    const series = contentService.getSeries();
 
     const handleSeriesClick = (item) => {
         setSelectedSeries(item);

@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
-import moonImg from '../assets/moon.png';
-import kuzenlerImg from '../assets/kuzenler.jpg';
-import erayImg from '../assets/eray_placeholder.png';
-import { viewService } from '../services/viewService';
+import { contentService } from '../services/contentService';
 
 const Movies = () => {
     const { t } = useTranslation();
@@ -34,44 +31,8 @@ const Movies = () => {
         };
     }, [isDrawerOpen]);
 
-    // Generate Movies
-    const rawMovies = [
-        {
-            id: 'kuzenler-1',
-            title: "Kuzenler",
-            description: "Kuzenlerin eğlenceli ve komik anları. Bu özel içerikle kahkahaya doyamayacaksınız!",
-            year: 2024,
-            rawDuration: 15,
-            duration: "15 dk.",
-            genre: "Komedi",
-            match: "98% Eşleşme",
-            rawMatch: 98,
-            views: 1500,
-            likes: 250,
-            dislikes: 0,
-            badge: "4K",
-            thumbnail: kuzenlerImg,
-            heroImage: kuzenlerImg,
-            videoUrl: "https://www.youtube.com/watch?v=ZixoY-1ET5s"
-        },
-        ...Array(30).fill(null).map((_, i) => ({
-            id: i + 1,
-            title: "Deneme 123",
-            description: "Telif hakkı olmayan güvenli içerik. Deneme amaçlı oluşturulmuştur.",
-            year: 2024,
-            rawDuration: 120,
-            duration: "120 dk.",
-            genre: "Genel",
-            match: "99% Eşleşme",
-            rawMatch: 99,
-            views: 1000,
-            likes: 100,
-            dislikes: 0,
-            badge: "HD",
-            thumbnail: erayImg,
-            heroImage: erayImg
-        }))
-    ];
+    // Get Movies from Service
+    const rawMovies = contentService.getMovies();
 
     // Merge stats with movies
     const movies = rawMovies.map(movie => {

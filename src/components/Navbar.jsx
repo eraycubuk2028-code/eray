@@ -55,6 +55,16 @@ const Navbar = () => {
         setShowLogin(false);
     };
 
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const handleSearch = (query) => {
+        if (!query.trim()) return;
+        navigate(`/search?q=${encodeURIComponent(query)}`);
+        // Optional: close search or clear query? kept open for UX
+        // setIsSearchOpen(false); 
+    };
+
     const handleLogout = () => {
         authService.logout();
         setUser(null);
@@ -159,12 +169,41 @@ const Navbar = () => {
 
                     <div style={styles.actions}>
                         {!isMobile && (
-                            <button style={styles.iconButton} aria-label="Search">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                    <circle cx="11" cy="11" r="8"></circle>
-                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                </svg>
-                            </button>
+                            <div style={{ ...styles.searchContainer, width: isSearchOpen ? '250px' : '36px', background: isSearchOpen ? 'rgba(0,0,0,0.75)' : 'transparent', border: isSearchOpen ? '1px solid #fff' : '1px solid transparent' }}>
+                                <button
+                                    style={styles.iconButton}
+                                    aria-label="Search"
+                                    onClick={() => {
+                                        if (isSearchOpen && searchQuery.trim()) {
+                                            handleSearch(searchQuery);
+                                        } else {
+                                            setIsSearchOpen(!isSearchOpen);
+                                        }
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                </button>
+                                <input
+                                    type="text"
+                                    placeholder={t('navbar.search') || "Takıl kafana göre..."}
+                                    style={{
+                                        ...styles.searchInput,
+                                        opacity: isSearchOpen ? 1 : 0,
+                                        width: isSearchOpen ? '100%' : '0px',
+                                        pointerEvents: isSearchOpen ? 'auto' : 'none'
+                                    }}
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleSearch(searchQuery);
+                                        }
+                                    }}
+                                />
+                            </div>
                         )}
 
                         {!isMobile && <ProfileTrigger />}
@@ -279,6 +318,24 @@ const styles = {
         display: 'flex',
         alignItems: 'center',
         gap: '20px',
+    },
+    searchContainer: {
+        display: 'flex',
+        alignItems: 'center',
+        overflow: 'hidden',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        borderRadius: '5px',
+        height: '36px',
+    },
+    searchInput: {
+        background: 'transparent',
+        border: 'none',
+        color: 'white',
+        outline: 'none',
+        padding: '0 10px',
+        fontSize: '0.9rem',
+        transition: 'width 0.3s, opacity 0.3s',
+        height: '100%',
     },
     iconButton: {
         background: 'none',

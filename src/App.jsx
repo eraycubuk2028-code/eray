@@ -8,6 +8,7 @@ import Create from './pages/Create';
 import Series from './pages/Series';
 import Movies from './pages/Movies';
 import NewPopular from './pages/NewPopular';
+import Search from './pages/Search';
 
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/series" element={<Series />} />
         <Route path="/movies" element={<Movies />} />
         <Route path="/new-popular" element={<NewPopular />} />
+        <Route path="/search" element={<Search />} />
       </Routes>
     </BrowserRouter>
   );
