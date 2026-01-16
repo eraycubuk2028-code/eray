@@ -126,15 +126,44 @@ const Watch = () => {
         }
     };
 
-    const toggleFullscreen = () => {
+    const toggleFullscreen = async () => {
         if (containerRef.current) {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
+            if (!document.fullscreenElement) {
+                try {
+                    await containerRef.current.requestFullscreen();
+                    if (screen.orientation && screen.orientation.lock) {
+                        await screen.orientation.lock('landscape').catch((e) => {
+                            // Fail silently on devices that don't support locking
+                            console.log("Orientation lock failed:", e);
+                        });
+                    }
+                } catch (err) {
+                    console.error("Fullscreen error:", err);
+                }
             } else {
-                containerRef.current.requestFullscreen();
+                if (document.exitFullscreen) {
+                    await document.exitFullscreen();
+                }
             }
         }
     };
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            if (!document.fullscreenElement) {
+                if (screen.orientation && screen.orientation.unlock) {
+                    try {
+                        screen.orientation.unlock();
+                    } catch (e) {
+                        // Fail silently
+                    }
+                }
+            }
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
 
     return (
         <div
@@ -255,10 +284,7 @@ const Watch = () => {
                         </div>
 
                         {/* Fullscreen */}
-                        <button className="icon-button" onClick={() => {
-                            if (document.fullscreenElement) document.exitFullscreen();
-                            else if (containerRef.current) containerRef.current.requestFullscreen();
-                        }}>
+                        <button className="icon-button" onClick={toggleFullscreen}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                         </button>
                     </div>
