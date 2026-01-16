@@ -18,36 +18,22 @@ const LoginModal = ({ onClose, onLogin }) => {
 
     const [error, setError] = useState('');
 
-    const handleGoogleClick = () => {
-        // Mock Google Login Flow
-        const width = 500;
-        const height = 600;
-        const left = (window.innerWidth - width) / 2;
-        const top = (window.innerHeight - height) / 2;
-
-        const popup = window.open(
-            'https://accounts.google.com/signin/v2/identifier?flowName=GlifWebSignIn&flowEntry=ServiceLogin',
-            'Google Login',
-            `width=${width},height=${height},top=${top},left=${left}`
-        );
-
-        // In a real app, we would listen for a postMessage from the popup
-        const timer = setInterval(() => {
-            if (popup.closed) {
-                clearInterval(timer);
-                // Simulate success after popup close
-                alert("Google Authentication Successful! (Mock)");
-                onLogin({
-                    name: "Google User",
-                    email: "user@gmail.com",
-                    avatar: "https://lh3.googleusercontent.com/a/default-user"
-                });
+    const handleGoogleClick = async () => {
+        try {
+            const result = await authService.loginWithGoogle();
+            if (result.success) {
+                onLogin(result.user);
                 onClose();
+            } else {
+                setError(result.message || "Google girişi başarısız.");
             }
-        }, 500);
+        } catch (error) {
+            console.error("Google login error:", error);
+            setError("Bir hata oluştu.");
+        }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
@@ -74,30 +60,30 @@ const LoginModal = ({ onClose, onLogin }) => {
                 return;
             }
 
-            const result = authService.register({
+            const result = await authService.register({
                 email,
                 password,
                 name: `${firstName} ${lastName}`,
                 dob: `${day}/${month}/${year}`,
-                avatar: selectedAvatar || `https://ui-avatars.com/api/?name=${firstName}+${lastName}&background=E50914&color=fff&size=128`
+                avatar: selectedAvatar
             });
 
             if (result.success) {
                 onLogin(result.user);
                 onClose();
             } else {
-                setError(t('auth.errors.emailExists')); // Translating backend-like error dynamically usually requires mapping, but here simple
+                setError(result.message);
             }
 
         } else {
             // Sign In Logic
-            const result = authService.login(email, password);
+            const result = await authService.login(email, password);
 
             if (result.success) {
                 onLogin(result.user);
                 onClose();
             } else {
-                setError(t('auth.errors.invalidCreds'));
+                setError(result.message);
             }
         }
     };
