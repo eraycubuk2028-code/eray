@@ -80,41 +80,30 @@ const SecuritySettings = () => {
                 </div>
 
                 {showPasswordForm && (
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            const currentPass = e.target.current.value;
-                            const newPass = e.target.new.value;
-                            const confirmPass = e.target.confirm.value;
+                    <div style={{ marginTop: '20px', padding: '20px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+                        <p style={{ color: '#ddd', marginBottom: '15px', fontSize: '0.9rem' }}>
+                            {t('settings.passwordResetDescription') || "Güvenliğiniz için şifre değiştirme işlemleri e-posta doğrulama bağlantısı üzerinden yapılmaktadır."}
+                        </p>
 
-                            // Custom Validations
-                            const validation = validatePassword(newPass);
-                            if (!validation.valid) {
-                                alert(validation.error);
-                                return;
-                            }
-
-                            if (newPass !== confirmPass) {
-                                alert(t('settings.passwordMismatch'));
-                                return;
-                            }
-
-                            const result = authService.changePassword(user.email, currentPass, newPass);
-                            if (result.success) {
-                                alert(t('settings.passwordChanged'));
-                                e.target.reset();
-                                setShowPasswordForm(false);
-                            } else {
-                                alert(t('settings.passwordError'));
-                            }
-                        }}
-                        style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px', padding: '20px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}
-                    >
-                        <input name="current" type="password" placeholder={t('settings.currentPassword')} style={styles.input} required />
-                        <input name="new" type="password" placeholder={t('settings.newPassword')} style={styles.input} required />
-                        <input name="confirm" type="password" placeholder={t('settings.confirmPassword')} style={styles.input} required />
-                        <button type="submit" style={styles.button}>{t('settings.changePassword')}</button>
-                    </form>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button
+                                onClick={async () => {
+                                    const result = await authService.changePassword(user.email);
+                                    alert(result.message);
+                                    if (result.success) setShowPasswordForm(false);
+                                }}
+                                style={styles.button}
+                            >
+                                {t('settings.sendResetLink') || "Sıfırlama Bağlantısı Gönder"}
+                            </button>
+                            <button
+                                onClick={() => setShowPasswordForm(false)}
+                                style={{ ...styles.button, background: 'transparent', border: '1px solid #555' }}
+                            >
+                                {t('common.cancel') || "İptal"}
+                            </button>
+                        </div>
+                    </div>
                 )}
             </div>
 

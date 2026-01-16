@@ -4,7 +4,8 @@ import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
     signOut,
-    updateProfile
+    updateProfile,
+    sendPasswordResetEmail
 } from "firebase/auth";
 
 const SESSION_KEY = 'cinemax_session';
@@ -93,13 +94,14 @@ export const authService = {
         }
     },
 
-    changePassword: async (email, currentPassword, newPassword) => {
-        // Firebase password change requires re-authentication usually or just sending a reset email.
-        // For security, implementing re-auth is complex in a modal. 
-        // We'll return a mock success or suggestion to use reset email for now, or assume signed in.
-        // Real implementation: updatePassword(currentUser, newPass).
-        // But we need the user to change it.
-        return { success: false, message: "Google ile girişlerde şifre değişimi Google üzerinden yapılmalıdır. E-posta ile girişlerde bu özellik yakında eklenecek." };
+    changePassword: async (email) => {
+        try {
+            await sendPasswordResetEmail(auth, email);
+            return { success: true, message: "Şifre sıfırlama bağlantısı e-posta adresinize gönderildi." };
+        } catch (error) {
+            console.error(error);
+            return { success: false, message: "E-posta gönderilemedi. Lütfen tekrar deneyin." };
+        }
     },
 
     updateUser: (updatedUser) => {
