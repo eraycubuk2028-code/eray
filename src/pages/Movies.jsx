@@ -13,24 +13,34 @@ const Movies = () => {
     const [likedMovies, setLikedMovies] = useState(new Set());
 
     // Fetch stats on mount and listen for real-time updates
+    // Fetch stats on mount and listen for real-time updates
     useEffect(() => {
-        // Load liked movies from local storage
-        const storedLikes = JSON.parse(localStorage.getItem('likedMovies') || '[]');
-        setLikedMovies(new Set(storedLikes));
+        if (!viewService || !viewService.listenToAllStats) {
+            console.error("ViewService not available");
+            return;
+        }
 
-        // RESET STATS (Temporary - remove after use if needed, but safe to keep checking a flag)
-        // Check if we haven't reset yet to avoid resetting every reload during this session
-        // For this specific user request, we'll force a reset once.
-        const hasReset = sessionStorage.getItem('hasResetStats');
-        if (!hasReset) {
-            viewService.resetAllStats();
-            sessionStorage.setItem('hasResetStats', 'true');
+        // Load liked movies from local storage with safety check
+        try {
+            const stored = localStorage.getItem('likedMovies');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) {
+                    setLikedMovies(new Set(parsed));
+                }
+            }
+        } catch (e) {
+            console.error("Error parsing liked movies:", e);
         }
 
         const unsubscribe = viewService.listenToAllStats((data) => {
-            setStats(data);
+            if (data) {
+                setStats(data);
+            }
         });
-        return () => unsubscribe();
+        return () => {
+            if (unsubscribe) unsubscribe();
+        };
     }, []);
 
     const handleLike = async (e, movie) => {
