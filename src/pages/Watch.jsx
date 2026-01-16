@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import moonImg from '../assets/moon.png';
 import './Watch.css';
+import { viewService } from '../services/viewService';
 
 const Watch = () => {
     const navigate = useNavigate();
@@ -11,11 +12,20 @@ const Watch = () => {
     const videoRef = useRef(null);
     const containerRef = useRef(null);
     const controlsTimeoutRef = useRef(null);
+    const hasIncremented = useRef(false);
 
     // Movie Data from separate page
     const movieData = location.state?.movie || {};
     const videoUrl = movieData.videoUrl || "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
     const isYouTube = videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be');
+
+    // Increment View Count
+    useEffect(() => {
+        if (movieData.id && !hasIncremented.current) {
+            viewService.incrementView(movieData.id);
+            hasIncremented.current = true;
+        }
+    }, [movieData.id]);
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(1);

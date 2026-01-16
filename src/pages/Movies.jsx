@@ -3,12 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../hooks/useTranslation';
 import moonImg from '../assets/moon.png';
 import kuzenlerImg from '../assets/kuzenler.jpg';
+import { viewService } from '../services/viewService';
 
 const Movies = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [stats, setStats] = useState({});
+
+    // Fetch stats on mount
+    useEffect(() => {
+        const fetchStats = async () => {
+            const data = await viewService.getAllMovieStats();
+            setStats(data);
+        };
+        fetchStats();
+    }, []);
 
     // Effect to handle body scroll lock
     useEffect(() => {
@@ -23,7 +34,7 @@ const Movies = () => {
     }, [isDrawerOpen]);
 
     // Generate Movies
-    const movies = [
+    const rawMovies = [
         {
             id: 'kuzenler-1',
             title: "Kuzenler",
@@ -60,6 +71,17 @@ const Movies = () => {
             heroImage: moonImg
         }))
     ];
+
+    // Merge stats with movies
+    const movies = rawMovies.map(movie => {
+        const movieStats = stats[movie.id];
+        return {
+            ...movie,
+            views: movieStats?.views || movie.views,
+            likes: movieStats?.likes || movie.likes,
+            dislikes: movieStats?.dislikes || movie.dislikes
+        };
+    });
 
     const handleMovieClick = (movie) => {
         setSelectedMovie(movie);
