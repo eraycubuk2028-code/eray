@@ -1,8 +1,14 @@
 .watch-container {
-    width: 100%;
+    width: 100vw;
     height: 100vh;
+    height: 100dvh;
     background-color: #000;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -168,24 +174,29 @@
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
     .watch-container {
-        height: 100dvh; /* Use dynamic viewport height for mobile browsers */
+        height: 100dvh;
+        /* Use dynamic viewport height for mobile browsers */
     }
 
     .controls-overlay {
-        padding: 15px 15px 30px; /* Reduce padding significantly */
+        padding: 15px 15px 30px;
+        /* Reduce padding significantly */
         gap: 10px;
     }
 
-    .left-controls, .right-controls {
+    .left-controls,
+    .right-controls {
         gap: 10px;
     }
 
     .volume-slider {
-        display: none; /* Hide volume slider on mobile */
+        display: none;
+        /* Hide volume slider on mobile */
     }
 
     .selector-label {
-        display: none; /* Hide labels like "Speed:" "Quality:" */
+        display: none;
+        /* Hide labels like "Speed:" "Quality:" */
     }
 
     .selector-container {
@@ -202,7 +213,7 @@
         padding: 8px 15px;
         font-size: 1rem;
     }
-    
+
     .time-display {
         font-size: 0.8rem;
     }
