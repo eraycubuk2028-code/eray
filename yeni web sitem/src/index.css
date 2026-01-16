@@ -1,0 +1,143 @@
+:root {
+  --primary: #E50914;
+  /* Netflix Red or we can go Blue/Purple as planned */
+  --background: #0a0a0a;
+  --surface: #141414;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --transition-smooth: all 0.3s ease;
+  --transition-fast: all 0.1s ease;
+}
+
+/* Global Select Styles for Dark Mode Visibility */
+select {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+}
+
+option {
+  background-color: #1a1a1a;
+  /* Enforce dark background for dropdown options */
+  color: #ffffff;
+}
+
+:root {
+  --glass: rgba(20, 20, 20, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+
+  --gradient-hero: linear-gradient(to top, var(--background) 0%, transparent 100%);
+  --gradient-card: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 100%);
+}
+
+.light-mode {
+  --background: #ffffff;
+  --surface: #f4f4f5;
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --glass: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.1);
+
+  --gradient-hero: linear-gradient(to top, var(--background) 0%, transparent 100%);
+  --gradient-card: linear-gradient(to top, rgba(255, 255, 255, 0.9) 0%, transparent 100%);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Movie Card Hover Effects */
+.movie-card:hover {
+  transform: scale(1.4);
+  z-index: 100;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  transition-delay: 0.3s;
+  /* Prevent accidental triggers */
+}
+
+.movie-card:hover div[style*="opacity: 0"] {
+  opacity: 1 !important;
+}
+
+.movie-card-hover:hover .card-overlay {
+  opacity: 1 !important;
+}
+
+.movie-card-hover:hover {
+  transform: scale(1.05) !important;
+  z-index: 10;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Animations for Studio */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
